@@ -1,49 +1,85 @@
-// script.js
 document.addEventListener("DOMContentLoaded", function () {
-  const checkFaq = setInterval(function () {
-    const questions = document.querySelectorAll(".faq-question");
+  function animateNumbers() {
+    const statNumbers = document.querySelectorAll(".stat-number");
 
-    if (questions.length > 0) {
-      clearInterval(checkFaq);
+    if (statNumbers.length === 0) return;
 
-      questions.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          const item = this.closest(".faq-item");
-          const isActive = item.classList.contains("active");
+    const observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.getAttribute("data-target"));
 
-          document.querySelectorAll(".faq-item").forEach(function (el) {
+            if (!target || isNaN(target)) return;
+
+            const duration = 2000;
+            const startTime = performance.now();
+
+            function easeOut(t) {
+              return 1 - Math.pow(1 - t, 3);
+            }
+
+            function updateNumber(currentTime) {
+              const elapsed = currentTime - startTime;
+              const progress = Math.min(elapsed / duration, 1);
+              const easedProgress = easeOut(progress);
+              const current = Math.floor(easedProgress * target);
+              el.textContent = current;
+
+              if (progress < 1) {
+                requestAnimationFrame(updateNumber);
+              } else {
+                el.textContent = target;
+              }
+            }
+
+            requestAnimationFrame(updateNumber);
+            observer.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.3 },
+    );
+
+    statNumbers.forEach(function (el) {
+      observer.observe(el);
+    });
+  }
+
+  setTimeout(animateNumbers, 300);
+
+  const faqItems = document.querySelectorAll(".faq-item");
+
+  if (faqItems.length > 0) {
+    faqItems.forEach(function (item) {
+      const question = item.querySelector(".faq-question");
+      if (question) {
+        question.addEventListener("click", function () {
+          const parent = this.closest(".faq-item");
+          const isActive = parent.classList.contains("active");
+
+          faqItems.forEach(function (el) {
             el.classList.remove("active");
           });
 
           if (!isActive) {
-            item.classList.add("active");
+            parent.classList.add("active");
           }
         });
-      });
-
-      const firstItem = document.querySelector(".faq-item");
-      if (firstItem) {
-        firstItem.classList.add("active");
       }
+    });
+
+    if (faqItems[0]) {
+      faqItems[0].classList.add("active");
     }
-  }, 300);
+  }
 
-  const checkForm = setInterval(function () {
-    const phoneInput = document.getElementById("userPhone");
-    if (phoneInput) {
-      clearInterval(checkForm);
-      initPhoneMask();
-      initForm();
-      initToast();
-    }
-  }, 300);
+  const phoneInput = document.getElementById("userPhone");
 
-  function initPhoneMask() {
-    const phoneInput = document.getElementById("userPhone");
-
-    phoneInput.addEventListener("input", function (e) {
+  if (phoneInput) {
+    phoneInput.addEventListener("input", function () {
       let value = this.value.replace(/\D/g, "");
-
       if (value.length === 0) {
         this.value = "";
         return;
@@ -85,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
           "-" +
           value.substring(9, 11);
       }
-
       this.value = formatted;
     });
 
@@ -93,82 +128,76 @@ document.addEventListener("DOMContentLoaded", function () {
       const digits = this.value.replace(/\D/g, "");
       if (digits.length < 11) {
         this.classList.add("error");
-        this.closest(".form-group").classList.add("error");
+        this.closest(".form-group")?.classList.add("error");
       } else {
         this.classList.remove("error");
-        this.closest(".form-group").classList.remove("error");
+        this.closest(".form-group")?.classList.remove("error");
       }
     });
   }
 
-  function initForm() {
-    const form = document.getElementById("contactForm");
+  const form = document.getElementById("contactForm");
 
+  if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-
       let isValid = true;
 
       const name = document.getElementById("userName");
       if (!name.value.trim() || name.value.trim().length < 2) {
         name.classList.add("error");
-        name.closest(".form-group").classList.add("error");
+        name.closest(".form-group")?.classList.add("error");
         isValid = false;
       } else {
         name.classList.remove("error");
-        name.closest(".form-group").classList.remove("error");
+        name.closest(".form-group")?.classList.remove("error");
       }
 
       const phone = document.getElementById("userPhone");
       const digits = phone.value.replace(/\D/g, "");
       if (digits.length < 11) {
         phone.classList.add("error");
-        phone.closest(".form-group").classList.add("error");
+        phone.closest(".form-group")?.classList.add("error");
         isValid = false;
       } else {
         phone.classList.remove("error");
-        phone.closest(".form-group").classList.remove("error");
+        phone.closest(".form-group")?.classList.remove("error");
       }
 
       const agree = document.getElementById("userAgree");
       if (!agree.checked) {
-        agree.closest(".checkbox-group").classList.add("error");
+        agree.closest(".checkbox-group")?.classList.add("error");
         isValid = false;
       } else {
-        agree.closest(".checkbox-group").classList.remove("error");
+        agree.closest(".checkbox-group")?.classList.remove("error");
       }
 
       if (!isValid) {
-        showToast(
-          "Ошибка",
-          "Пожалуйста, заполните все обязательные поля",
-          "error",
-        );
+        showToast("Ошибка", "Заполните все обязательные поля", "error");
         return;
       }
-
-      const formData = {
-        name: name.value.trim(),
-        phone: phone.value.trim(),
-        city: document.getElementById("userCity").value.trim(),
-        message: document.getElementById("userMessage").value.trim(),
-        agree: agree.checked,
-      };
-
-      console.log("📤 Отправка данных:", formData);
 
       const btn = form.querySelector('button[type="submit"]');
       const originalText = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
       btn.disabled = true;
 
+      const formData = {
+        name: name.value.trim(),
+        phone: phone.value.trim(),
+        city: document.getElementById("userCity")?.value.trim() || "",
+        message: document.getElementById("userMessage")?.value.trim() || "",
+        agree: agree.checked,
+      };
+
+      console.log("📤 Отправка данных:", formData);
+
       setTimeout(function () {
         showToast(
           "Успешно!",
-          "Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время.",
+          "Заявка отправлена. Мы свяжемся с вами.",
           "success",
         );
-
         form.reset();
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -185,17 +214,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  function initToast() {
-    const closeBtn = document.getElementById("toastClose");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", function () {
-        document.getElementById("toast").classList.remove("show");
-      });
-    }
-  }
-
   function showToast(title, message, type) {
     const toast = document.getElementById("toast");
+    if (!toast) return;
+
     const toastIcon = document.getElementById("toastIcon");
     const toastTitle = document.getElementById("toastTitle");
     const toastMessage = document.getElementById("toastMessage");
@@ -203,13 +225,15 @@ document.addEventListener("DOMContentLoaded", function () {
     toast.className = "toast";
     if (type === "error") {
       toast.classList.add("error");
-      toastIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+      if (toastIcon)
+        toastIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
     } else {
-      toastIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+      if (toastIcon)
+        toastIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
     }
 
-    toastTitle.textContent = title;
-    toastMessage.textContent = message;
+    if (toastTitle) toastTitle.textContent = title;
+    if (toastMessage) toastMessage.textContent = message;
 
     toast.classList.add("show");
 
@@ -218,4 +242,84 @@ document.addEventListener("DOMContentLoaded", function () {
       toast.classList.remove("show");
     }, 5000);
   }
+
+  const closeBtn = document.getElementById("toastClose");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function () {
+      document.getElementById("toast")?.classList.remove("show");
+    });
+  }
+
+  if (typeof Lenis !== "undefined") {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: function (t) {
+        return Math.min(1, 1.001 - Math.pow(2, -10 * t));
+      },
+      orientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+          lenis.scrollTo(target, {
+            offset: -80,
+            duration: 1.5,
+          });
+        }
+      });
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.lenis) {
+        window.lenis.resize();
+      }
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    const toggleBtn = e.target.closest(".nav-toggle");
+    const menuWrapper = document.querySelector(".nav-menu-wrapper");
+    const overlay = document.querySelector(".nav-overlay");
+
+    if (toggleBtn) {
+      if (menuWrapper) {
+        toggleBtn.classList.toggle("active");
+        menuWrapper.classList.toggle("active");
+        if (overlay) overlay.classList.toggle("active");
+        document.body.style.overflow = menuWrapper.classList.contains("active")
+          ? "hidden"
+          : "";
+      }
+      return;
+    }
+
+    if (!menuWrapper || !menuWrapper.classList.contains("active")) return;
+
+    const isLink =
+      e.target.closest(".nav-link") ||
+      e.target.closest(".nav-btn") ||
+      e.target.closest(".nav-logo");
+    const isClickOutside =
+      !menuWrapper.contains(e.target) || e.target.closest(".nav-overlay");
+
+    if (isLink || isClickOutside) {
+      const activeToggle = document.querySelector(".nav-toggle");
+      if (activeToggle) activeToggle.classList.remove("active");
+      menuWrapper.classList.remove("active");
+      if (overlay) overlay.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+  });
 });

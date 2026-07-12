@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /privacy/
+Disallow: /terms/
+Disallow: /licenses/
+
+Sitemap: https://продатьлекарства.рф/sitemap.xml
+Host: https://продатьлекарства.рф
