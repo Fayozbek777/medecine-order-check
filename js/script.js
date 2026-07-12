@@ -1,20 +1,32 @@
 document.addEventListener("DOMContentLoaded", function () {
   // ============================================================
-  // 1. АНИМАЦИЯ ЦИФР (с оптимизацией)
+  // 1. АНИМАЦИЯ ЦИФР (с debounce для производительности)
   // ============================================================
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = function () {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
   function animateNumbers() {
     const statNumbers = document.querySelectorAll(".stat-number");
     if (statNumbers.length === 0) return;
 
     const observer = new IntersectionObserver(
-      function (entries) {
+      debounce(function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             const el = entry.target;
             const target = parseInt(el.getAttribute("data-target"));
             if (!target || isNaN(target)) return;
 
-            const duration = 2000;
+            const duration = 1500;
             const startTime = performance.now();
 
             function easeOut(t) {
@@ -39,8 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
             observer.unobserve(el);
           }
         });
-      },
-      { threshold: 0.3 },
+      }, 100),
+      { threshold: 0.3, rootMargin: "50px" },
     );
 
     statNumbers.forEach(function (el) {
@@ -48,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Запускаем анимацию через requestIdleCallback (не блокирует поток)
   if ("requestIdleCallback" in window) {
     requestIdleCallback(
       function () {
@@ -61,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ============================================================
-  // 2. FAQ (оптимизирован)
+  // 2. FAQ
   // ============================================================
   function initFAQ() {
     const faqItems = document.querySelectorAll(".faq-item");
@@ -90,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Запускаем через requestIdleCallback
   if ("requestIdleCallback" in window) {
     requestIdleCallback(initFAQ, { timeout: 300 });
   } else {
@@ -98,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ============================================================
-  // 3. ФОРМА (маска телефона)
+  // 3. ФОРМА — маска телефона
   // ============================================================
   function initPhoneMask() {
     const phoneInput = document.getElementById("userPhone");
@@ -244,7 +254,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Запускаем форму через requestIdleCallback
   if ("requestIdleCallback" in window) {
     requestIdleCallback(
       function () {
@@ -300,58 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ============================================================
-  // 6. LENIS (плавный скролл) — только на десктопе
-  // ============================================================
-  function initLenis() {
-    if (window.innerWidth < 768) return;
-    if (typeof Lenis === "undefined") return;
-
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: function (t) {
-        return Math.min(1, 1.001 - Math.pow(2, -10 * t));
-      },
-      orientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-    });
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute("href"));
-        if (target) {
-          lenis.scrollTo(target, {
-            offset: -80,
-            duration: 1.5,
-          });
-        }
-      });
-    });
-
-    window.addEventListener("resize", function () {
-      if (window.lenis) {
-        window.lenis.resize();
-      }
-    });
-  }
-
-  // Запускаем Lenis через requestIdleCallback
-  if ("requestIdleCallback" in window) {
-    requestIdleCallback(initLenis, { timeout: 600 });
-  } else {
-    setTimeout(initLenis, 600);
-  }
-
-  // ============================================================
-  // 7. МОБИЛЬНОЕ МЕНЮ (критическая функция — запускаем сразу)
+  // 6. МОБИЛЬНОЕ МЕНЮ
   // ============================================================
   document.addEventListener("click", function (e) {
     const toggleBtn = e.target.closest(".nav-toggle");
