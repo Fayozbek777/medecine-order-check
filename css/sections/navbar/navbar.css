@@ -65,7 +65,6 @@
   gap: 24px;
 }
 
-/* Блок бренда */
 .nav-brand-block {
   display: flex;
   align-items: center;
@@ -127,7 +126,6 @@
   white-space: nowrap;
 }
 
-/* Меню */
 .nav-menu-wrapper {
   display: flex;
   align-items: center;
@@ -203,7 +201,6 @@
   border-radius: 4px;
 }
 
-/* Контакты */
 .nav-contacts {
   display: flex;
   align-items: center;
@@ -282,7 +279,6 @@
   border-radius: 4px;
 }
 
-/* Кнопка */
 .nav-btn {
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   color: var(--white);
@@ -328,25 +324,43 @@
   outline-offset: 3px;
 }
 
-/* Бургер-кнопка */
+/* ================================================================
+   БУРГЕР-КНОПКА — ОБНОВЛЕНА
+   ================================================================ */
 .nav-toggle {
   display: none;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 6px;
-  width: 40px;
-  height: 40px;
-  background: none;
-  border: none;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(0, 180, 216, 0.15);
+  border-radius: 14px;
   cursor: pointer;
-  padding: 0;
+  padding: 10px;
   z-index: 10000;
   -webkit-tap-highlight-color: transparent;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.nav-toggle:hover {
+  background: rgba(0, 180, 216, 0.05);
+  border-color: rgba(0, 180, 216, 0.3);
+  transform: scale(1.02);
+}
+
+.nav-toggle:active {
+  transform: scale(0.92);
 }
 
 .nav-toggle .bar {
-  width: 26px;
-  height: 3px;
+  width: 28px;
+  height: 3.5px;
   background-color: var(--dark);
   border-radius: 4px;
   transform-origin: center;
@@ -358,7 +372,7 @@
 }
 
 .nav-toggle.active .bar:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
+  transform: translateY(9.5px) rotate(45deg);
   background-color: var(--primary);
 }
 
@@ -368,11 +382,19 @@
 }
 
 .nav-toggle.active .bar:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
+  transform: translateY(-9.5px) rotate(-45deg);
   background-color: var(--primary);
 }
 
-/* Оверлей фона */
+.nav-toggle.active {
+  border-color: var(--primary);
+  background: rgba(0, 180, 216, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 180, 216, 0.1);
+}
+
+/* ================================================================
+   ОВЕРЛЕЙ
+   ================================================================ */
 .nav-overlay {
   position: fixed;
   top: 0;
@@ -531,33 +553,115 @@
   }
 
   .nav-container {
-    padding: 0 18px;
+    padding: 0 16px;
   }
 
   .nav-logo img {
-    height: 80px;
+    height: 70px;
+  }
+
+  .nav-toggle {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    gap: 5px;
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .nav-toggle .bar {
+    width: 24px;
+    height: 3px;
+  }
+
+  .nav-toggle.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .nav-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
   }
 
   .nav-menu-wrapper {
     max-width: 100%;
-    padding: 96px 24px 28px;
+    padding: 88px 20px 24px;
   }
 
   .nav-link {
-    font-size: 17px;
+    font-size: 16px;
+    padding: 12px 0;
   }
 
   .nav-phone {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .nav-btn {
-    font-size: 15px;
-    padding: 13px;
+    font-size: 14px;
+    padding: 12px;
   }
 }
 
-/* Уважение к настройкам доступности */
+/* ================================================================
+   МЕЛКИЕ ТЕЛЕФОНЫ (до 380px)
+   ================================================================ */
+@media (max-width: 380px) {
+  .navbar {
+    height: 64px;
+  }
+
+  .nav-container {
+    padding: 0 12px;
+    gap: 12px;
+  }
+
+  .nav-logo img {
+    height: 56px;
+  }
+
+  .nav-toggle {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 10px;
+  }
+
+  .nav-toggle .bar {
+    width: 22px;
+    height: 2.5px;
+  }
+
+  .nav-toggle.active .bar:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+
+  .nav-toggle.active .bar:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+  }
+
+  .nav-menu-wrapper {
+    padding: 76px 16px 20px;
+  }
+
+  .nav-link {
+    font-size: 15px;
+    padding: 10px 0;
+  }
+
+  .nav-phone {
+    font-size: 15px;
+  }
+
+  .nav-btn {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .navbar,
   .nav-logo img,
@@ -572,5 +676,13 @@
   .phone-status {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+
+  .nav-toggle:hover {
+    transform: none !important;
+  }
+
+  .nav-toggle:active {
+    transform: none !important;
   }
 }
