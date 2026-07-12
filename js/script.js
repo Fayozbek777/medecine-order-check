@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // ============================================================
+  // 1. АНИМАЦИЯ ЦИФР (с оптимизацией)
+  // ============================================================
   function animateNumbers() {
     const statNumbers = document.querySelectorAll(".stat-number");
-
     if (statNumbers.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -10,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
           if (entry.isIntersecting) {
             const el = entry.target;
             const target = parseInt(el.getAttribute("data-target"));
-
             if (!target || isNaN(target)) return;
 
             const duration = 2000;
@@ -47,11 +48,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  setTimeout(animateNumbers, 300);
+  // Запускаем анимацию через requestIdleCallback (не блокирует поток)
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(
+      function () {
+        animateNumbers();
+      },
+      { timeout: 500 },
+    );
+  } else {
+    setTimeout(animateNumbers, 500);
+  }
 
-  const faqItems = document.querySelectorAll(".faq-item");
+  // ============================================================
+  // 2. FAQ (оптимизирован)
+  // ============================================================
+  function initFAQ() {
+    const faqItems = document.querySelectorAll(".faq-item");
+    if (faqItems.length === 0) return;
 
-  if (faqItems.length > 0) {
     faqItems.forEach(function (item) {
       const question = item.querySelector(".faq-question");
       if (question) {
@@ -75,9 +90,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  const phoneInput = document.getElementById("userPhone");
+  // Запускаем через requestIdleCallback
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(initFAQ, { timeout: 300 });
+  } else {
+    setTimeout(initFAQ, 300);
+  }
 
-  if (phoneInput) {
+  // ============================================================
+  // 3. ФОРМА (маска телефона)
+  // ============================================================
+  function initPhoneMask() {
+    const phoneInput = document.getElementById("userPhone");
+    if (!phoneInput) return;
+
     phoneInput.addEventListener("input", function () {
       let value = this.value.replace(/\D/g, "");
       if (value.length === 0) {
@@ -136,9 +162,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const form = document.getElementById("contactForm");
+  // ============================================================
+  // 4. ОТПРАВКА ФОРМЫ
+  // ============================================================
+  function initForm() {
+    const form = document.getElementById("contactForm");
+    if (!form) return;
 
-  if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       let isValid = true;
@@ -214,6 +244,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Запускаем форму через requestIdleCallback
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(
+      function () {
+        initPhoneMask();
+        initForm();
+      },
+      { timeout: 400 },
+    );
+  } else {
+    setTimeout(function () {
+      initPhoneMask();
+      initForm();
+    }, 400);
+  }
+
+  // ============================================================
+  // 5. TOAST
+  // ============================================================
   function showToast(title, message, type) {
     const toast = document.getElementById("toast");
     if (!toast) return;
@@ -250,7 +299,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  if (typeof Lenis !== "undefined") {
+  // ============================================================
+  // 6. LENIS (плавный скролл) — только на десктопе
+  // ============================================================
+  function initLenis() {
+    if (window.innerWidth < 768) return;
+    if (typeof Lenis === "undefined") return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: function (t) {
@@ -288,6 +343,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Запускаем Lenis через requestIdleCallback
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(initLenis, { timeout: 600 });
+  } else {
+    setTimeout(initLenis, 600);
+  }
+
+  // ============================================================
+  // 7. МОБИЛЬНОЕ МЕНЮ (критическая функция — запускаем сразу)
+  // ============================================================
   document.addEventListener("click", function (e) {
     const toggleBtn = e.target.closest(".nav-toggle");
     const menuWrapper = document.querySelector(".nav-menu-wrapper");
