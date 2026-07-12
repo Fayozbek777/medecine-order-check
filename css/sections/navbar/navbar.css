@@ -519,6 +519,8 @@
     flex-direction: column;
     align-items: stretch;
     gap: 18px;
+    position: relative;
+    bottom: 145px;
     margin-top: auto;
     border-top: 2px solid #f0f4f8;
     padding-top: 26px;
