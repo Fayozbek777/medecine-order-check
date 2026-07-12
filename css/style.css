@@ -1,0 +1,94 @@
+/* ==========================================================================
+   1. ПОДКЛЮЧЕНИЕ ШРИФТОВ (Geist)
+   ========================================================================== */
+@font-face {
+  font-family: "Geist";
+  src: url("../fonts/Geist-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("../fonts/Geist-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("../fonts/Geist-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("../fonts/Geist-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+:root {
+  --primary: #00b4d8;
+  --primary-hover: #0096c7;
+  --dark: #1d3557;
+  --dark-light: #457b9d;
+  --white: #ffffff;
+  --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; /* Плавный скролл по якорям */
+}
+
+body {
+  font-family: "Geist", sans-serif;
+  background-color: var(--bg-site);
+  color: var(--dark);
+  line-height: 1.5;
+  overflow-x: hidden;
+  /* Отступ сверху, равный высоте десктопного navbar, 
+     чтобы первый экран не залезал под фиксированную шапку */
+  padding-top: 80px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button {
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Вспомогательный контейнер для выравнивания контента по центру */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
