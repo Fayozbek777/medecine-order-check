@@ -10,6 +10,7 @@
       name="description"
       content="Выкупаем дорогостоящие лекарства у населения по всей России. Продать остатки препаратов после лечения. Быстрая оценка, оплата на месте, работаем по закону."
     />
+    <meta name="author" content="Фаёзбек" />
     <meta
       name="keywords"
       content="выкуп лекарств, продать лекарства, остатки лекарств, центр выкупа, дорогостоящие препараты, онкология, таргетная терапия"
@@ -63,6 +64,17 @@
       }
     </script>
 
+    <!-- ⚡ PRELOAD ИЗОБРАЖЕНИЙ -->
+    <link
+      rel="preload"
+      href="images/intro_image.png"
+      as="image"
+      fetchpriority="high"
+    />
+    <link rel="preload" href="images/apteka_image.png" as="image" />
+    <link rel="preload" href="images/sklad_image.png" as="image" />
+
+    <!-- ⚡ PRELOAD ШРИФТОВ -->
     <link
       rel="preload"
       href="fonts/Geist-Regular.woff2"
@@ -77,21 +89,8 @@
       type="font/woff2"
       crossorigin
     />
-    <link
-      rel="preload"
-      href="fonts/Geist-Medium.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="fonts/Geist-SemiBold.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
 
+    <!-- ⚡ КРИТИЧЕСКИЙ CSS -->
     <style>
       * {
         margin: 0;
@@ -165,6 +164,19 @@
         gap: 60px;
         align-items: center;
       }
+      img {
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: attr(width) / attr(height);
+        background: #f0f4f8;
+      }
+      .intro-image-wrapper {
+        position: relative;
+        min-height: 450px;
+        background: #f0f4f8;
+        border-radius: 16px;
+        overflow: hidden;
+      }
       .stat-number {
         display: inline-block;
         min-width: 50px;
@@ -172,16 +184,9 @@
         text-align: center;
         will-change: contents;
       }
-      img {
-        max-width: 100%;
-        height: auto;
-        aspect-ratio: attr(width) / attr(height);
-      }
-      .intro-image img {
-        width: 100%;
-        height: auto;
-      }
     </style>
+
+    <!-- 📦 ОСНОВНОЙ CSS -->
     <link
       rel="stylesheet"
       href="css/style.css"
@@ -189,6 +194,8 @@
       onload="this.media = 'all'"
     />
     <noscript><link rel="stylesheet" href="css/style.css" /></noscript>
+
+    <!-- 📦 FONT AWESOME -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -200,6 +207,8 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     /></noscript>
+
+    <!-- 📦 LENIS -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/lenis@1.1.18/dist/lenis.css"
